@@ -1,0 +1,38 @@
+#ws-header {
+  .header-banner { 
+    
+    padding: 0;
+    background-color: #2585C2;
+    width: 100%;
+    
+    >div {
+      padding: 20px;
+    }
+    
+    img {
+      width: 100%;
+    }
+  }
+  
+  nav {
+    margin-bottom: 0;
+    background-color: #0061A6;
+    border: 0;
+    border-radius: initial;
+    
+    .collapse {
+      padding: 0 6em;
+    }
+  } 
+  
+  .nav li a {
+    font-weight: 300;
+    font-size: 18px;
+    color: #FDDA99;
+    text-transform: uppercase;
+  }
+  
+  .navbar-right li a {
+    text-transform: none;
+  }
+}

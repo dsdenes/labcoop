@@ -1,0 +1,24 @@
+#ws-admin {
+  .region-adminMenu {
+    min-height: 600px;
+    background-color: #ddd;
+  }
+  
+  .region-adminContent{
+    min-height: 600px;  
+    background-color: #c4c4c4;
+    padding: 1em;
+  }
+  
+  /*************************
+    COMMON
+  *************************/
+  select {
+    padding: 0.3em;
+    width: 100%;
+  } 
+  
+  .horizontal-form .input-group {
+    padding-right: 15px;
+  }
+}

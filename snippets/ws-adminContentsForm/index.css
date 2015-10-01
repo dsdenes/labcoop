@@ -1,0 +1,20 @@
+@import (css, inline) "../../../node_modules/froala-editor/css/froala_editor.min.css";
+
+#ws-adminContentsForm {
+  
+  textarea[name="lead"] {
+    resize: vertical;
+    min-height: 150px;
+  }
+  
+  .buttonRowFixed {
+    display: none;
+    position: fixed;
+    top: 0;
+    margin-left: -1em;
+    background-color: #c4c4c4;
+    padding: 1em;
+    z-index: 100;
+  }
+  
+}

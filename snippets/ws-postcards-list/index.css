@@ -1,0 +1,63 @@
+#ws-postcards-list {
+
+  margin-top: 1em;
+  
+  .container {
+    margin-top: 1em;
+  }
+  
+  .region-basketLeft {
+    margin-top: 1em; 
+  }
+  
+  .region-items {
+    margin-top: 0;
+  }
+  
+  .item {
+    height: 200px;
+    margin-top: 1em;
+ 
+  }
+  
+  .itemInner {
+    
+    background-image: url(https://placehold.it/300x300);
+    background-size: 100% 100%;
+    padding: 1em;
+    position: relative;
+    height: 100%;
+
+    img {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }    
+    
+    .type {
+      position: absolute;
+      font-size: 18px;
+    }
+
+    .price {
+      position: absolute;
+      left: 1em;
+      bottom: 1em;  
+    }
+
+    .icons {
+      position: absolute;
+      right: 1em;
+      bottom: 1em;    
+      display: flex;
+      cursor: pointer;
+    }    
+    
+    .fa-heart-o {
+      margin-left: 0.5em;
+    }
+  }
+  
+}

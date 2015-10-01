@@ -1,0 +1,37 @@
+#ws-catSelectorLeft {
+  
+  margin-top: 1em;
+  padding-top: 1em;
+  padding-bottom: 1em;  
+  background-color: #d4d4d4;
+  
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .catrow {
+    
+    display: flex;
+    
+    input {
+      flex-basis: 2em;
+      height: 15px;
+      margin-top: 2px;
+    }
+    
+  }
+  
+  .level1 {
+
+  }
+
+  .level2 {
+    margin-left: 1em;
+  }
+
+  .level3 {
+    margin-left: 2em;  
+  }  
+}

@@ -1,0 +1,156 @@
+<div id="ws-adminItemsForm">
+  <button type="button" class="back btn btn-info">Vissza a listához</button>
+  <button type="button" class="delete btn btn-danger">Törlés</button>
+  <div class="formRow row">
+    <div class="col-sm-12">
+      <form method="post" class="horizontal-form">
+
+        {{#each formDefaults}}
+          <input type="hidden" name="{{@key}}" value="{{this}}" />
+        {{/each}}
+
+        <div class="row form-group">
+          <label class="col-sm-2 control-label">Típus</label>
+          <div class="col-sm-10 input-group">
+            <select class="region-tagsSelect">
+
+            </select>
+              <!--
+              <select class="form-control" name="type" required disabled>
+                  <option value="{{type}}" selected>{{typeName}}</option>
+              </select>-->
+            
+            <span class="input-group-addon success"><i class="fa fa-check fa-lg"></i></span>
+          </div>
+        </div>
+
+        <div class="row form-group">
+          <label class="col-sm-2 control-label" data-validate="length" data-length="5">Név</label>
+          <div class="col-sm-10 input-group">
+              <input type="text" class="form-control" name="name" placeholder="Név" required>
+              <span class="input-group-addon danger"><i class="fa fa-warning fa-lg"></i></span>
+          </div>
+        </div>
+
+        <div class="row form-group">
+          <label class="col-sm-2 control-label">Ár</label>
+          <div class="col-sm-10 input-group" data-validate="number">
+              <input type="text" class="form-control" name="price" placeholder="Ár" required>
+              <span class="input-group-addon danger"><i class="fa fa-warning fa-lg"></i></span>
+          </div>
+        </div>            
+
+        <div class="row form-group">
+          <label class="col-sm-2 control-label">Rövid leírás</label>
+          <div class="col-sm-10 input-group">
+              <input type="text" class="form-control" name="sdescription" placeholder="Rövid leírás">
+              <span class="input-group-addon info"><i class="fa fa-check fa-lg"></i></span>
+          </div>
+        </div>         
+
+        <div class="row form-group">
+          <label class="col-sm-2 control-label">Leírás</label>
+          <div class="col-sm-10 input-group">
+            <textarea class="form-control" name="description" placeholder="Leírás"></textarea>
+            <span class="input-group-addon info"><i class="fa fa-check fa-lg"></i></span>
+          </div>
+        </div>             
+
+        <div class="file row form-group">
+
+          <!-- Standar Form -->
+          <div class="fileForm col-sm-12">
+            <div class="row">
+              <span class="btn btn-success fileinput-button col-sm-12">
+                  <i class="fa fa-plus-square-o fa-lg"></i>
+                  <span>Marketing képek hozzáadása</span>
+                  <!-- The file input field used as target for the file upload widget -->
+                  <input id="marketing-kepek" type="file" name="files[]" multiple>
+              </span>              
+              <div class="progress col-sm-12">
+                  <div class="progress-bar progress-bar-success"></div>
+              </div>
+              <div class="files col-sm-12"></div>
+            </div>
+          </div>
+
+          <div class="sortable">
+            <div class="col-sm-3">
+              <div class="image-placeholder">
+
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <div class="image-placeholder">
+
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <div class="image-placeholder">
+
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <div class="image-placeholder">
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="file row form-group">
+
+          <!-- Standar Form -->
+          <div class="fileForm col-sm-12">
+            <div class="row">
+              <span class="btn btn-success fileinput-button col-sm-12">
+                  <i class="fa fa-plus-square-o fa-lg"></i>
+                  <span>Képeslap oldalak hozzáadása</span>
+                  <!-- The file input field used as target for the file upload widget -->
+                  <input id="termek-oldalak" type="file" name="files[]" multiple>
+              </span>              
+              <div class="progress col-sm-12">
+                  <div class="progress-bar progress-bar-success"></div>
+              </div>
+              <div class="files col-sm-12"></div>
+            </div>
+          </div>
+
+          <div class="sortable">
+            <div class="col-sm-3">
+              <div class="image-placeholder">
+                1. oldal
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <div class="image-placeholder">
+                2. oldal
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <div class="image-placeholder">
+                3. oldal
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <div class="image-placeholder">
+                4. oldal
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary col-xs-12" disabled>Mentés</button>
+        
+      </form>
+    </div>
+  </div>
+</div>

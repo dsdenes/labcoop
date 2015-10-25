@@ -1,14 +1,13 @@
-var path = require('path');
-// from .build
 var App = require('app');
-var debug = App.debugFactory('snippet:postcards-index:controller');
 var router = require('./router');
 var LayoutView = require('./layout');
 
-router.on('route:login', function() {
+router.on('route:login', function(where) {
   
   // render to the main content part
-  App.layout.showChildView('content', new LayoutView());
+  App.layout.showChildView('content', new LayoutView({
+    where: where
+  }));
   
   /*
   var itemCollection = new (require('collection/items'))();

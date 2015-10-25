@@ -3,22 +3,24 @@
 var express = require('express');
 var router = express.Router();
 var format = require('util').format;
-var l = require('../logger').logger;
+var l = require('../core/lib/logger').logger;
 var _ = require('underscore');
 var passport = require('passport');
-var response = require('../lib/response');
-var isAuthenticatedMiddleware = require('../lib/auth').isAuthenticatedMiddleware;
+var isAuthenticatedMiddleware = require('../core/lib/auth').isAuthenticatedMiddleware;
 
-var Users = require('../db/users');
+var util = require('util');
+
+var UsersModel = require('../db/models/users');
+var Auth = require('../core/lib/auth');
 
 l.info(__filename);
 
-router.all('/api/static/login/failed', function(req, res) {
-  res.json(response.error('Failed to login!'));
+router.all('/api/static/login/failed', function(req, res, next) {
+  next(new Error('Failed to login+'));
 });
 
 router.all('/api/static/login/success', function(req, res) {
-  res.json(response.result('Login succeed!'));
+  res.send(true).end();
 });
 
 /**
@@ -28,7 +30,7 @@ router.all('/api/static/login/success', function(req, res) {
  *
  * @apiSuccess {Object} user Loggedin user.
  */
-router.get('/api/login', isAuthenticatedMiddleware, function(req, res) {
+router.get('/api/auth/user', isAuthenticatedMiddleware, function(req, res) {
   res.json(req.user);
 });
 
@@ -43,19 +45,23 @@ router.get('/api/login', isAuthenticatedMiddleware, function(req, res) {
  * @apiSuccess {String} firstname Firstname of the User.
  * @apiSuccess {String} lastname  Lastname of the User.
  */
-router.post('/api/login', 
-  passport.authenticate('local', {
-    successRedirect: '/api/static/login/success',
-    failureRedirect: '/api/static/login/failed'
-  }));
+router.post('/api/auth/login', 
+  passport.authenticate('local'), function(req, res) {
+    res.send(true).end();
+  });
 
+router.post('/api/auth/login/token', 
+  Auth.authenticateTokenMiddleware, 
+  function(req, res) {
+    res.status(204).end();
+  });
 /**
  * @api {post} /api/logout Logout
  * @apiName logout
  * @apiGroup Auth
  *
  */
-router.get('/api/logout', function(req, res, next) {
+router.get('/api/auth/logout', function(req, res, next) {
   req.logout();
   req.session.save(function (err) {
     if (err) {
@@ -63,6 +69,19 @@ router.get('/api/logout', function(req, res, next) {
     }
     res.json(response.result('Logout succeed!'));
   });
+});
+
+router.get('/api/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login', 'https://www.googleapis.com/auth/userinfo.email'] }));
+
+// GET /auth/google/callback
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  If authentication fails, the user will be redirected back to the
+//   login page.  Otherwise, the primary route function function will be called,
+//   which, in this example, will redirect the user to the home page.
+router.get('/api/auth/google/callback', passport.authenticate('google', { failureRedirect: '/#login' }), function(req, res) {
+  
+  res.redirect('/#account');
+  
 });
 
 module.exports = router;

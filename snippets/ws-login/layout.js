@@ -1,11 +1,15 @@
 var path = require('path');
 var App = require('app');
 var fs = require('fs');
+var co = require('co');
 
 var Handlebars = require('handlebars');
 var debug = App.debugFactory('snippet:login:layout');
 var controller = require('./controller');
 var $ = require('jquery');
+var format = require('util').format;
+var Auth = require('../../lib/auth');
+var User = require('../../lib/user');
 
 var layoutTemplate = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 
@@ -15,42 +19,130 @@ App.eventReqres.setHandler("render:login" , function() {
 
 var LayoutView = App.LayoutView.extend({   
   
+  initialize: function(options) {
+    this.options = options;
+  },
+  
   template: Handlebars.compile(layoutTemplate),
   
-  ui: {
-    username: '#inputEmail',
-    password: '#inputPassword',
-    signin: '.btn-signin'
+  className: 'container-fluid',
+  
+  id: 'ws-login',
+  
+  goNext: function() {
+
+    let navigateTarget = this.options.where ? this.options.where : 'account';
+    
+    App.router.navigate(navigateTarget, { trigger: true });
+    
   },
   
   onRender: function() {
-    debug('render');    
+    
+    let _this = this;
+    
     this.renderNested();
+    
+    co(function*() {
+      if (yield Auth.isLoggedin()) {
+        _this.goNext();
+      }
+    });
+
+    App.vent.on('loggedin', function(loggedin) {
+      loggedin && _this.goNext();
+    });    
+    
   },
   
   events: {
-    'submit .form-signin': 'login'
+    'submit #form-signin': 'signin',
+    'submit #form-signup': 'signup'
   },
   
-  login: function(e) {
-    e.preventDefault();
+  signin: function(event) {
     
-    $('.login-failed', this.$el).remove();
+    let _this = this;
     
-    $.post('/api/login', 
-      { 
-        username: $('#inputEmail').val(),
-        password: $('#inputPassword').val()
-      }, 
-      function(data) {
-        if (data.error) {
-          $('#remember').after('<p class="bg-danger login-failed">Sikertelen bejelentkezés!</p>');
-        } else {
-          location.reload();
-        }      
-      }, 
-      'json'
-    );
+    event.preventDefault();
+    
+    this.$el.find('#form-signin button').addClass('ajax');
+    
+    this.$el.find('.message').remove();
+    
+    co(function*(){
+      
+      yield Auth.login(
+        $('#form-signin input[name="email"]').val(), 
+        $('#form-signin input[name="password"]').val()
+      );
+      
+    }).catch(function(error) {
+      $('#form-signin .box').append('<p class="bg-danger message">Sikertelen bejelentkezés!</p>');
+    });
+    
+  },
+  
+  signup: function(event) {
+    
+    event.preventDefault();
+
+    this.$el.find('#form-signup button').addClass('ajax');
+
+    this.$el.find('.message').remove();
+    
+    co(function*(){
+    
+      yield User.signupEmail(
+        $('#form-signup input[name="email"]').val()
+      );
+      
+      $('#form-signup .box').append(format('<p class="bg-success message">%s</p>', 'Gratulálunk, a megadott e-mail címre küldött linken keresztük folytathatja a regisztrációt!'));
+      
+    }).catch(function(error) {
+      
+      var text;
+
+      try {
+        switch (true) {
+          case (/duplicate key/i.test(error.responseText)):
+            text = 'A megadott e-mail címmel már van regisztrált felhasználó!'
+            break;
+          case (/validation failed/i.test(error.responseText)):
+            text = 'A megadott e-mail cím hibásnak néz ki!'
+            break;
+          default:
+            text = 'Valami nem jó!';
+            break;
+        }
+      } catch (error) {
+        text = 'Sikertelen regisztráció!';
+      }    
+      
+      $('#form-signup .box').append(format('<p class="bg-danger message">%s</p>', text));
+    });
+
+    /*
+      error: function(xhr, textStatus) {
+
+        var text;
+
+        try {
+          switch (true) {
+            case (xhr.responseJSON.code == 11000):
+              text = 'A megadott e-mail címmel már van regisztrált felhasználó!'
+              break;
+            case (xhr.responseJSON.name == 'ValidationError'):
+              text = 'A megadott e-mail cím hibás!'
+              break;
+          }
+        } catch (error) {
+          text = 'Sikertelen regisztráció!';
+        }
+
+        $('#form-signup .box').append(format('<p class="bg-danger message">%s</p>', text));
+      }
+      */
   }
   
 });

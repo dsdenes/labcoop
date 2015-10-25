@@ -1,18 +1,15 @@
 var Backbone = require('backbone');
 
-var App = require('app');
-var debug = App.debugFactory('model:users');
-
 var Model = Backbone.Model.extend({
   
-  urlRoot: '/api/users'
+  urlRoot: '/api/cases'
   
 });
 
 var Collection = Backbone.Collection.extend({
   
   model: Model,
-  url: '/api/jobs'
+  url: '/api/cases'
   
 });
 

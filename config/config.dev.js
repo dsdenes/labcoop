@@ -9,3 +9,8 @@ process.env.DB_PASS = null;
 process.env.DB_DATABASE = 'lawcenter';
 
 process.env.EXPRESS_SECRET = 'waVU07ZUUlXWqMdXSi7XtAxmoCMeZlxSnitakHn349mnlC0cKls0rFbpQcQMO2Nh';
+
+process.env.MANDRILL_KEY = '4uKbK8LRNPOafHsJhcPS9Q';
+
+process.env.GOOGLE_CLIENT_ID = "514811219065-rs8oinmbqb1j3gf0133l0g3fgm2u0h9d.apps.googleusercontent.com";
+process.env.GOOGLE_CLIENT_SECRET = "11Wbb3RHQ0gx-v7kduCPMvrG";

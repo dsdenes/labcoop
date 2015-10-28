@@ -1,23 +1,27 @@
-var path = require('path');
-var App = require('app');
+// for build time compiler
+
 var fs = require('fs');
-var co = require('co');
+const layoutTemplate = fs.readFileSync(__dirname + '/index.html', 'utf8');
 
-var Handlebars = require('handlebars');
-var debug = App.debugFactory('snippet:login:layout');
-var controller = require('./controller');
-var $ = require('jquery');
-var format = require('util').format;
-var Auth = require('../../lib/auth');
-var User = require('../../lib/user');
+// for build time compiler
 
-var layoutTemplate = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+import co from 'co';
+import _ from 'underscore';
+import $ from 'jquery';
+import Handlebars from 'handlebars';
+import { format } from 'util';
 
-App.eventReqres.setHandler("render:login" , function() {
-  return LayoutView;
-});
+import App from 'app';
+import { Model as FoodModel } from '../../model/foods';
 
-var LayoutView = App.LayoutView.extend({   
+import { isLoggedin } from '../../lib/auth';
+import { login } from '../../lib/auth';
+
+import { signup } from '../../lib/user';
+
+const debug = App.debugFactory('snippet:header:layout');
+
+const LayoutView = App.LayoutView.extend({   
   
   initialize: function(options) {
     this.options = options;
@@ -31,9 +35,10 @@ var LayoutView = App.LayoutView.extend({
   
   goNext: function() {
 
-    let navigateTarget = this.options.where ? this.options.where : 'account';
+    // TODO optional navigate target
+    //let navigateTarget = this.options.where ? this.options.where : '';
     
-    App.router.navigate(navigateTarget, { trigger: true });
+    App.router.navigate('', { trigger: true });
     
   },
   
@@ -44,7 +49,7 @@ var LayoutView = App.LayoutView.extend({
     this.renderNested();
     
     co(function*() {
-      if (yield Auth.isLoggedin()) {
+      if (yield isLoggedin()) {
         _this.goNext();
       }
     });
@@ -60,25 +65,33 @@ var LayoutView = App.LayoutView.extend({
     'submit #form-signup': 'signup'
   },
   
+  removeError: function() {
+    this.$el.find('.message').remove();
+  },
+
+  message: function(form, type, message) {
+    this.removeError();
+    this.$el.find(format('#form-%s button', form))
+      .after(format('<p class="message bg-%s">%s</p>', type, message));
+  },
+  
   signin: function(event) {
-    
+
+    event.preventDefault();
+
     let _this = this;
     
-    event.preventDefault();
-    
-    this.$el.find('#form-signin button').addClass('ajax');
-    
-    this.$el.find('.message').remove();
+    _this.removeError();
     
     co(function*(){
       
-      yield Auth.login(
+      yield login(
         $('#form-signin input[name="email"]').val(), 
         $('#form-signin input[name="password"]').val()
       );
       
     }).catch(function(error) {
-      $('#form-signin .box').append('<p class="bg-danger message">Sikertelen bejelentkezés!</p>');
+      _this.message('signin', 'danger', 'Login failed!');
     });
     
   },
@@ -87,17 +100,18 @@ var LayoutView = App.LayoutView.extend({
     
     event.preventDefault();
 
-    this.$el.find('#form-signup button').addClass('ajax');
+    let _this = this;
 
-    this.$el.find('.message').remove();
+    _this.removeError();
     
     co(function*(){
     
-      yield User.signupEmail(
-        $('#form-signup input[name="email"]').val()
+      yield signup(
+        $('#form-signup input[name="email"]').val(),
+        $('#form-signup input[name="password"]').val()
       );
       
-      $('#form-signup .box').append(format('<p class="bg-success message">%s</p>', 'Gratulálunk, a megadott e-mail címre küldött linken keresztük folytathatja a regisztrációt!'));
+      _this.message('signup', 'success', 'Your account has been created!');
       
     }).catch(function(error) {
       
@@ -106,45 +120,27 @@ var LayoutView = App.LayoutView.extend({
       try {
         switch (true) {
           case (/duplicate key/i.test(error.responseText)):
-            text = 'A megadott e-mail címmel már van regisztrált felhasználó!'
+            text = 'There is an other user with this email address!'
             break;
           case (/validation failed/i.test(error.responseText)):
-            text = 'A megadott e-mail cím hibásnak néz ki!'
+            text = 'The given e-mail address looks incorrect!'
             break;
           default:
-            text = 'Valami nem jó!';
+            text = 'Something missing, so signup failed!';
             break;
         }
       } catch (error) {
-        text = 'Sikertelen regisztráció!';
+        text = 'Signup failed!';
       }    
       
-      $('#form-signup .box').append(format('<p class="bg-danger message">%s</p>', text));
+      _this.message('signup', 'danger', text);
+
     });
 
-    /*
-      error: function(xhr, textStatus) {
-
-        var text;
-
-        try {
-          switch (true) {
-            case (xhr.responseJSON.code == 11000):
-              text = 'A megadott e-mail címmel már van regisztrált felhasználó!'
-              break;
-            case (xhr.responseJSON.name == 'ValidationError'):
-              text = 'A megadott e-mail cím hibás!'
-              break;
-          }
-        } catch (error) {
-          text = 'Sikertelen regisztráció!';
-        }
-
-        $('#form-signup .box').append(format('<p class="bg-danger message">%s</p>', text));
-      }
-      */
   }
   
 });
 
-module.exports = LayoutView;
+export { 
+  LayoutView 
+};

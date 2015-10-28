@@ -1,21 +1,11 @@
-var Module = {
-  id: "mainPage",
-  
-  router: function() {
-    return require('./router.js');
+export default {
+  Controller: () => {
+    import Controller from './controller.js'
+    return Controller;  
   },
   
-  controller: function() {
-    return require('./controller.js');
+  Layout: () => {
+    import Layout from './layout.js'
+    return Layout;  
   },
-  
-  layout: function() {
-    return require('./layout.js');
-  },
-  
-  init: function() {
-
-  }
-};
-
-module.exports = Module;
+}

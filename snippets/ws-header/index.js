@@ -1,13 +1,11 @@
-var Module = {
-  id: "header",
-  
-  layout: function() {
-    return require('./layout.js');
+export default {
+  Controller: () => {
+    import Controller from './controller.js'
+    return Controller;  
   },
   
-  init: function() {
-    return this;
-  }
-};
-
-module.exports = Module;
+  Layout: () => {
+    import Layout from './layout.js'
+    return Layout;  
+  },
+}

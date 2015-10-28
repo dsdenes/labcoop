@@ -1,9 +1,9 @@
-import App, { Handlebars } from './App';
-import path from 'path';
+import App from 'app';
+import Handlebars from 'handlebars';
 
 // because brfs
 var fs = require('fs');
-const layoutTemplate = fs.readFileSync(path.join(__dirname, 'mainLayoutTemplate.html'), 'utf8');
+const layoutTemplate = fs.readFileSync(__dirname + '/mainLayoutTemplate.html', 'utf8');
 
 export default new (App.LayoutView.extend({
 
@@ -11,7 +11,7 @@ export default new (App.LayoutView.extend({
 
   template: Handlebars.compile(layoutTemplate),
   
-  onRender: () => {
+  onRender: function() {
     this.renderNested();
   },
 

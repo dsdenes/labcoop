@@ -1,22 +1,18 @@
-var Backbone = require('backbone');
+import Backbone from 'backbone'
 
-var App = require('app');
-var debug = App.debugFactory('model:users');
-
-var Model = Backbone.Model.extend({
+const Model = Backbone.Model.extend({
   
-  urlRoot: '/api/users'
+  urlRoot: '/api/users',
+  idAttribute: "_id"
   
 });
 
-var Collection = Backbone.Collection.extend({
+const Collection = Backbone.Collection.extend({
   
   model: Model,
-  url: '/api/jobs'
+  url: '/api/users'
   
 });
 
-module.exports = {
-  Model: Model,
-  Collection: Collection
-};
+export { Model };
+export { Collection };

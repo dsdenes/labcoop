@@ -1,21 +1,24 @@
-var path = require('path');
-var App = require('app');
+// for build time compiler
+import path from 'path';
+
 var fs = require('fs');
-var co = require('co');
-var Auth = require('../../lib/auth');
+const layoutTemplate = fs.readFileSync(__dirname + '/index.html', 'utf8');
 
-var Handlebars = require('handlebars');
-var debug = App.debugFactory('snippet:header:layout');
+// for build time compiler
 
-var layoutTemplate = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+import co from 'co';
+import _ from 'underscore';
+import $ from 'jquery';
+import Handlebars from 'handlebars';
+import {format} from 'util';
 
-var $ = require('jquery');
+import App from 'app';
+import { Model as FoodModel } from '../../model/foods';
+import { isLoggedin } from '../../lib/auth';
 
-App.eventReqres.setHandler("render:header" , function(){
-  return LayoutView;
-});
+const debug = App.debugFactory('snippet:header:layout');
 
-var LayoutView = App.LayoutView.extend({   
+const LayoutView = App.LayoutView.extend({   
   
   template: Handlebars.compile(layoutTemplate),
   
@@ -27,7 +30,7 @@ var LayoutView = App.LayoutView.extend({
     var _this = this;
     
     co(function*() {
-      _this.showLoggedin(yield Auth.isLoggedin());
+      _this.showLoggedin(yield isLoggedin());
     });
 
     App.vent.on('loggedin', function(loggedin) {
@@ -48,4 +51,4 @@ var LayoutView = App.LayoutView.extend({
   
 });
 
-module.exports = LayoutView;
+export { LayoutView };

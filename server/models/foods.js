@@ -10,6 +10,7 @@ var shortid = require('shortid');
 var db = require('../core/db');
 
 var schema = new mongoose.Schema({
+  
   _id: {
     type: String,
     unique: true,
@@ -17,15 +18,19 @@ var schema = new mongoose.Schema({
   },
   
   user_id: { type: String, required: true }, 
-  datetime: { type: Date, default: Date.now },
+  
+  food: { type: String, required: true }, 
   calories: { type: Number, required: true }, 
+  
+  created: { type: Date, default: Date.now },
+  modified: { type: Date, default: Date.now }
 
 });
 
-schema.statics.addCase = function(caseData) {
-  return q.ninvoke(this, 'create', caseData);
+schema.statics.addFood = function(foodData) {
+  return q.ninvoke(this, 'create', foodData);
 };
 
-let Model = db.model('Cases', schema);
+let Model = db.model('Foods', schema);
 
 module.exports = Model;

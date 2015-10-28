@@ -1,21 +1,16 @@
-var Module = {  
-  router: function() {
-    return require('./router.js');
+export default {
+  Router: () => {
+    import Router from './router.js';
+    return Router;  
   },
   
-  controller: function() {
-    return require('./controller.js');
+  Controller: () => {
+    import Controller from './controller.js';
+    return Controller;  
   },
   
-  layout: function() {
-    return require('./layout.js');
+  Layout: () => {
+    import Layout from './layout.js';
+    return Layout;  
   },
-  
-  init: function() {
-    var _this = this;
-    
-    return this;
-  }
-};
-
-module.exports = Module;
+}

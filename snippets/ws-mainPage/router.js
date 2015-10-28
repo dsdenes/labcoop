@@ -1,13 +1,11 @@
-var path = require('path');
-var App = require('app');
-var debug = App.debugFactory('snippet:mainPage:router');
+import App from 'app';
 
-var router = new (App.Backbone.Router.extend({   
+const router = new (App.Backbone.Router.extend({   
 
-  initialize: function() {
-    debug('initialize');
+  routes: {
+  
   }
   
 }));
 
-module.exports = router;
+export default router;

@@ -1,12 +1,12 @@
-var App = require('app');
+import App from 'app';
 
-var router = new (App.Backbone.Router.extend({   
+const router = new (App.Backbone.Router.extend({   
 
   routes: {
     'login': 'login',
-    'login/back/:where': 'login'
+    'login/logout': 'logout'
   }
-  
+
 }));
 
-module.exports = router;
+export default router;

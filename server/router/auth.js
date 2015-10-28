@@ -10,7 +10,7 @@ var isAuthenticatedMiddleware = require('../core/lib/auth').isAuthenticatedMiddl
 
 var util = require('util');
 
-var UsersModel = require('../db/models/users');
+var UsersModel = require('../models/users');
 var Auth = require('../core/lib/auth');
 
 l.info(__filename);
@@ -47,7 +47,7 @@ router.get('/api/auth/user', isAuthenticatedMiddleware, function(req, res) {
  */
 router.post('/api/auth/login', 
   passport.authenticate('local'), function(req, res) {
-    res.send(true).end();
+    res.status(204).end();
   });
 
 router.post('/api/auth/login/token', 
@@ -67,7 +67,7 @@ router.get('/api/auth/logout', function(req, res, next) {
     if (err) {
       return next(err);
     }
-    res.json(response.result('Logout succeed!'));
+    res.status(204).end();
   });
 });
 

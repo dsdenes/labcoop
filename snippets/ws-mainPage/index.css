@@ -1,96 +1,58 @@
 #ws-mainpage {
 
-  @lg: ~"only screen and (min-width: 1200px)";
-  @md: ~"only screen and (min-width: 992px) and (max-width: 1199px)";
-  @sm: ~"only screen and (min-width: 768px) and (max-width: 991px)";
-  @xs: ~"only screen and (max-width: 767px)";
+  min-height: 1200px;
+  width: 100%;
+  background-color: #1E5773;
+  padding-top: 3em;
   
-  .head {
-    background-color: #2e5776;
-    color: #fff;
-    padding: 45px;
-    
-    h1 {
-      font-size: 56px;
-      text-align: center;
-      margin: 0;
-    }
-    
-    h2 {
-      font-size: 28px;
-      text-align: center;
-      margin: 1em 0 0 0;
-      letter-spacing: 2px;
-    }
-    
+  #form-food {
+    background-color: #fff;
+    padding: 1em;
   }
   
-  .middle {
-    padding-top: 2em;
-    font-size: 16px;
+  #form-filter {
+    margin-top: 1em;
+    background-color: #fff;
+    padding: 1em;
     
-    .testimonial {
-      .quot {
-        font-style: italic;
-        border-left: 5px solid #2e5776;
-        padding-left: 1em;
-        
-        @media @sm, @xs {
-          margin-bottom: 1.5em;
-        }      
-      }
-
-      .img {
-        text-align: center;
-      }
-    }    
-    
-    .action {
-      
-      display: flex;
-      flex-wrap: wrap;
-      flex-direction: column;
-      
-      @media @sm, @xs {
-        justify-content: center;
-        align-items: center;
-        font-size: 22px;
-      }      
-      
-      p {
-        margin-bottom: 30px;
-        
-        @media @sm, @xs {
-          text-align: center;
-        }      
-        
-        &.message {
-          margin-bottom: 0;
-          padding: 0.5em;
-          width: 300px;
-        }
-      }
-
-      .top {
-        margin-bottom: 5px;
-      }
-      
-      input {
-        margin-bottom: 10px;
-        width: 300px;
-        padding: 5px;
-      }
-      
-      button {
-        display: block;
-        width: 300px;
-        margin-bottom: 5px;
-      }
-      
+    button {
+      margin-top: 1em;
     }
   }
   
-
+  #dailybox {
+    margin-top: 1em;
+    background-color: #fff;
+    padding: 1em;
+    background-color: #fff;
+    
+    .ok {
+      background-color: darkgreen;
+      color: #fff;
+    }
+    
+    .notok {
+      background-color: red;
+      color: #fff;
+    }
+  }
   
+  table {
+    width: 100%;
+    background-color: #fff;
+    margin-top: 1em;
+    
+    td {
+      padding: 10px;
+    }
+    
+    td.save {
+      display: none;
+    }
+    
+    td input {
+      display: none;
+    }
+  }
   
 }

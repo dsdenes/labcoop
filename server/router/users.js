@@ -7,6 +7,9 @@ var format = require('util').format;
 var Logger = require('../core/lib/logger');
 var l = Logger.logger;
 
+var UsersModel = require('../models/users');
+var FoodsModel = require('../models/foods');
+
 var Auth = require('../core/lib/auth');
 var User = require('../core/lib/user');
 
@@ -16,58 +19,13 @@ var _ = require('underscore');
 var crypto = require('crypto');
 var Hash = require('password-hash');
 
-//var db = require('../db/items');
-
 l.info(__filename);
 
-/** 
- * @api {post} /api/users Get all users
- * @apiName getUserList
- * @apiGroup Users
- *
- * @apiSuccess {Array} users List of user objects.
- */
-router.get('/api/users', Auth.isAuthenticatedMiddleware, function(req, res, next) {
-  co(function* () {
-
-    let users = yield q.ninvoke(UsersModel, 'find', {});
-
-    res.json(users);
-
-  }).catch(function(error) {
-    next(error);
-  });
-});
-
 /**
- * @api {post} /api/signup Sign up a user only with email (without password)
- * @apiName signup-email
- * @apiGroup Auth
- *
- * @apiParam {String} username E-mail address as username
- *
+ * @api {post} /api/users Sign up an user by email and password
+ * @apiName userSignup
+ * @apiGroup Users
  */
-router.post('/api/users/email', function(req, res, next) {
-
-    if (!req.body.email) {
-      let error = new Error('Wrong call');
-      error.status = 400;
-      next(error);
-    }
-  
-    req.body.token = crypto.randomBytes(32).toString('hex');
-    req.body.type = 'user';
-
-    next();
-
-  },             
-  User.addUserMiddleware,             
-  User.sendActivateEmailMiddleware,
-  function(req, res, next) {
-    res.status(204).end();
-  }
-);  
-
 router.post('/api/users', 
   function(req, res, next) {
 
@@ -78,7 +36,6 @@ router.post('/api/users',
     }
 
     req.body.token = crypto.randomBytes(32).toString('hex');
-    req.body.type = 'user';
   
     next();
 
@@ -97,23 +54,26 @@ router.post('/api/users',
  *
  * @apiSuccess {Object} user Object of a user.
  */
-router.get('/api/users/:userid', Auth.isAuthenticatedMiddleware, function(req, res, next) {
-  co(function* () {
+router.get('/api/users/:userid', 
+  Auth.isAuthenticatedMiddleware, 
+  Auth.justOwnerUrlIdMiddleware,         
+  function(req, res, next) {
+    co(function* () {
 
-    let userid = req.params.userid; 
+      let userid = req.params.userid; 
 
-    let user = yield q.ninvoke(UsersModel, 'findOne', { _id: userid });
-    
-    delete user.password;
-    delete user.oauth;
-    delete user.__v;
+      let user = yield q.ninvoke(UsersModel, 'findOne', { _id: userid });
 
-    res.json(user);
+      delete user.password;
+      delete user.oauth;
+      delete user.__v;
 
-  }).catch(function(error) {
-    next(error);
+      res.json(user);
+
+    }).catch(function(error) {
+      next(error);
+    });
   });
-});
 
 /**
  * @api {put} /api/users/:id Modify user
@@ -137,7 +97,6 @@ router.put('/api/users/:userid',
 
       delete updateData._id;
       delete updateData.__v;
-      delete updateData.type;
       delete updateData.oauth;
       delete updateData.created;
 
@@ -152,25 +111,6 @@ router.put('/api/users/:userid',
 
       yield q.ninvoke(UsersModel, 'update', { _id: userId }, updateData, { runValidators: true });
 
-      if (
-        updateData.name &&
-        updateData.phone &&
-        updateData.password
-      ) {
-
-        q.ninvoke(UsersModel, 'update', { 
-          _id: userId,  
-          token: {
-            $exists: true
-          }
-        }, { 
-          $unset: {
-            token: 1
-          }
-        });
-        
-      }
-
       res.status(204).end();
 
     }).catch(function(error) {
@@ -180,42 +120,29 @@ router.put('/api/users/:userid',
   });
 
 /**
- * @api {post} /api/users/:userid/cases Get cases for user.
- * @apiName getCasesByUserId
- * @apiGroup Cases
+ * @api {get} /api/users/:userid/foods Get foods for user.
+ * @apiName getFoodsByUserId
+ * @apiGroup Foods
  *
  * @apiParam {String} userid Users unique ID.
  *
- * @apiSuccess {Array} cases Array of cases belonging to a user.
+ * @apiSuccess {Array} cases Array of foods belonging to a user.
  */
-router.get('/api/users/:userid/cases', Auth.isAuthenticatedMiddleware, function(req, res, next) {
-  co(function* () {
+router.get('/api/users/:userid/foods', 
+  Auth.isAuthenticatedMiddleware, 
+  Auth.justOwnerUrlIdMiddleware,
+  function(req, res, next) {
+    co(function* () {
 
-    let userId = req.params.userid; 
+      let userId = req.params.userid; 
 
-    let userType = (yield q.ninvoke(UsersModel, 'findOne', { _id: userId }))['type'];
+      let foods = yield q.ninvoke(FoodsModel, 'find', { user_id: userId });
 
-    let filter = {};
+      res.json(foods);
 
-    switch (userType) {
-      case 'user':
-        filter['user._id'] = userId; 
-        break;
-      case 'salesrep':
-        filter['salesrep_id'] = userId; 
-        break;
-      case 'lawyer':
-        filter['lawyer._id'] = userId; 
-        break;
-    }
-
-    let cases = yield q.ninvoke(CasesModel, 'find', filter);
-
-    res.json(cases);
-
-  }).catch(function(error) {
-    next(error);
+    }).catch(function(error) {
+      next(error);
+    });
   });
-});
 
 module.exports = router;
